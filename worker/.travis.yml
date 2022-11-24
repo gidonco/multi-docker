@@ -1,0 +1,18 @@
+sudo: required
+language: generic
+
+services:
+  - docker
+
+before_install: 
+  - docker build -t gidonco/react-test -f ./client/Dockerfile.dev ./client/Dockerfile.dev
+
+script: 
+    - docker  run -e CI=true gidonco/react-test npm test
+
+after_success: 
+    - docker build -t gidonco/multi-client ./client
+    - docker build -t gidonco/multi-nginx ./nginx
+    - docker build -t gidonco/multi-server ./server
+    - docker build -t gidonco/multi-worker ./worker
+    
